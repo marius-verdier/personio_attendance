@@ -10,19 +10,31 @@ import dotenv
 
 class AttendanceSpider(scrapy.Spider):
     name = "attendance_spider"
-    allowed_domains = ["dev-partner-marius.personio.de", "id.personio.de"]
-    start_urls = ["https://dev-partner-marius.personio.de/login/index"]
+    allowed_domains = ["id.personio.de"]
+    start_urls = []
 
     def __init__(self, action=None, *args, **kwargs):
         super(AttendanceSpider, self).__init__(*args, **kwargs)
         dotenv.load_dotenv()
+
+        self.allowed_domains.append(os.getenv('BASE_URL'))
+        start_url = f'https://{os.getenv("BASE_URL")}/login/index'
+        self.start_urls.append(start_url)
+
         self.email = os.getenv('CREDS_EMAIL')
         self.password = os.getenv('CREDS_PASS')
-        self.action = action  # 'start' or 'stop'
+        self.action = action  # 'start', 'break', 'stop_break' or 'stop'
         self.state_file = '.attendance_state.json'
+        self.aria_label = {
+            'start': 'Clock in',
+            'break': 'Take a break',
+            'stop_break': 'Continue working',
+            'stop': 'Clock out'
+        }
 
     def start_requests(self):
         url = self.start_urls[0]
+        print(f"[PersonioClocker] Trying to log in for {self.email}")
         yield scrapy.FormRequest(
             url=url, 
             callback=self.get_page, 
@@ -30,7 +42,12 @@ class AttendanceSpider(scrapy.Spider):
             meta={
                 "playwright": True,
                 "playwright_page_methods": [
-                    PageMethod("wait_for_timeout", 3000),        
+                    # wait for all components to be rendered
+                    PageMethod("wait_for_timeout", 8000),
+                    # click the button to perform the action
+                    PageMethod("click", selector = f'button[aria-label="{self.aria_label[self.action]}"]',),
+                    # wait for the action to be performed
+                    PageMethod("wait_for_timeout", 3000),
                 ],
             },
             dont_filter = True
@@ -39,35 +56,34 @@ class AttendanceSpider(scrapy.Spider):
     def get_page(self, response):
 
         if "For security reasons you're required to enter the token" in response.text:
-            print("Token required")
+            print(f"[PersonioClocker] Personio detected a login from a new device, they sent a code to {self.email}")
 
             hidden_token = response.css('input[name="_token"]::attr(value)').extract_first()
-            print("Hidden token : ", hidden_token)
 
             # wait user input for code
-            code = input("Enter the code: ")
+            code = input(f"[PersonioClocker] Please enter the code you received at {self.email} : ")
+
+            url = self.start_urls[0]
 
             yield FormRequest(
-                url="https://dev-partner-marius.personio.de/login/token-auth",
+                url=url,
                 formdata={"_token": hidden_token, "token": code},
                 meta={
                     "playwright": True,
                     "playwright_page_methods": [
-                        PageMethod("wait_for_timeout", 7000),        
+                        # wait for all components to be rendered
+                        PageMethod("wait_for_timeout", 8000),
+                        # click the button to perform the action
+                        PageMethod("click", selector = f'button[aria-label="{self.aria_label[self.action]}"]',),
+                        # wait for the action to be performed
+                        PageMethod("wait_for_timeout", 3000),
                     ],
                     },
             )
             return
 
         else :
-            print("Logged in")
-            print("Fetching attendance page")
+            print("[PersonioClocker] Log in successful")
 
-            
-
-            print(response.text)
-    
-    def parse(self, response):
-        print("Parsing attendance page")
-        print(response.text)
-        open_in_browser(response)
+            print(f"[PersonioClocker] Performing action: {self.aria_label[self.action]}")
+                
