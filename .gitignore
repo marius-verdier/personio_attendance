@@ -1,0 +1,4 @@
+.venv/
+personio_scrap/__pycache__/
+personio_scrap/spiders/__pycache__/
+.env

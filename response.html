@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" data-language-preference="en-GB"><![endif]-->
+<!--[if gt IE 8]><!--><html class="no-js" lang="en" data-language-preference="en-GB"> <!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+
+    <title>Personio</title>
+
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1.0">
+
+    <link rel="apple-touch-icon" sizes="57x57" href="https://assets.cdn.personio.de/apple-touch-icon-57x57.png?v=2">
+    <link rel="apple-touch-icon" sizes="60x60" href="https://assets.cdn.personio.de/apple-touch-icon-60x60.png?v=2">
+    <link rel="apple-touch-icon" sizes="72x72" href="https://assets.cdn.personio.de/apple-touch-icon-72x72.png?v=2">
+    <link rel="apple-touch-icon" sizes="76x76" href="https://assets.cdn.personio.de/apple-touch-icon-76x76.png?v=2">
+    <link rel="apple-touch-icon" sizes="114x114" href="https://assets.cdn.personio.de/apple-touch-icon-114x114.png?v=2">
+    <link rel="apple-touch-icon" sizes="120x120" href="https://assets.cdn.personio.de/apple-touch-icon-120x120.png?v=2">
+    <link rel="apple-touch-icon" sizes="144x144" href="https://assets.cdn.personio.de/apple-touch-icon-144x144.png?v=2">
+    <link rel="apple-touch-icon" sizes="152x152" href="https://assets.cdn.personio.de/apple-touch-icon-152x152.png?v=2">
+    <link rel="apple-touch-icon" sizes="180x180" href="https://assets.cdn.personio.de/apple-touch-icon-180x180.png?v=2">
+    <link rel="icon" href="https://assets.cdn.personio.de/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="https://assets.cdn.personio.de/favicon.png" type="image/png" media="(prefers-color-scheme: light)" />
+    <link rel="icon" href="https://assets.cdn.personio.de/favicon-dark.png" type="image/png" media="(prefers-color-scheme: dark)" />
+
+        <link rel="stylesheet" href="https://assets.cdn.personio.de/fonts/open-sans.css">
+
+    <link rel="stylesheet" href="https://assets.cdn.personio.de/build/client/css/vendor.c5bd65904f4d9f576cb4.css">
+    <link rel="stylesheet" href="https://assets.cdn.personio.de/build/client/css/app.88a9e9ad0e8a3adc3508.css">
+
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <script>window.i18nHash = "2adf15f2b39e180aea9aa7aba870d51c"</script>
+    <script>
+    window.CDN_DOMAIN = "https:\/\/assets.cdn.personio.de";
+    window.CDN_DOMAIN_TRANS = "https:\/\/assets.cdn.personio.de";
+    window.CDN_DOMAIN_STATIC_ASSET = "https:\/\/assets.cdn.personio.de";
+    window.FRONTEND_RELEASE_MANAGER = "https:\/\/frontend-artifacts.personio.de";
+</script>
+    <script>
+    window.frontendProxyModeEnabled = true
+</script></head>
+
+<!-- Body -->
+<body lang="en" class="overhaul">
+
+    <div class="blank-page-container">
+          <div id="sessions-login-container"></div>
+    </div>
+
+        
+    <script>
+        window.REDUX_INITIAL_STATE = window.REDUX_INITIAL_STATE || {
+        bladeState: {}
+        };
+
+        window.REDUX_INITIAL_STATE.bladeState.company = {
+            name: "Marius",
+            logo: "https:\/\/assets.cdn.personio.de\/logos\/239541\/default\/aecdd0077eef468ed24df29e2154e7d3.png",
+            hostname: "dev-partner-marius",
+            greenUrl: "",
+        };
+
+        window.REDUX_INITIAL_STATE.bladeState.authOptions = {
+            formAction: "https:\/\/dev-partner-marius.personio.de\/login\/index",
+            googleSSOUri: null,
+            authenticationURI: null,
+            showPersonioLogin: Boolean(Number(0)),
+        };
+
+        window.REDUX_INITIAL_STATE.bladeState.messages = {
+            success: null,
+            error: null,
+            errorDetails: {
+                email: null,
+                password: null,
+            }
+        }
+
+        window.REDUX_INITIAL_STATE.bladeState.featureFlags = {
+            'personioGreenBadgeEnabled': false,
+            'loginPageContentTreatment': "personioRedesign",
+            'emaillessLoginEnabled': false,
+        }
+
+        window.REDUX_INITIAL_STATE.bladeState.rumDisabled = false
+
+        window.APP_ENV = 'production';
+    </script>
+
+    <div id="empty-react-div-do-not-use"></div>
+    <div id="toast-portals"></div>
+    <script type="text/javascript" src="https://assets.cdn.personio.de/build/client/js/manifest.4c068e5f5e3dafcaea11.js"></script>
+    <script type="text/javascript" src="https://assets.cdn.personio.de/build/client/js/vendor.0f7b30a75e25754bf175.js"></script>
+    <script type="text/javascript" src="https://assets.cdn.personio.de/build/client/js/app.2ba45c25eceb8ad5dddf.js"></script>
+
+            <script>
+    const LOAD_NPS_SURVEY = 'loadNPSSurvey';
+    const QUALTRICS_SCRIPT_IN_HTML = `(function(){var g=function(e,h,f,g){
+this.get=function(a){for(var a=a+"=",c=document.cookie.split(";"),b=0,e=c.length;b<e;b++){for(var d=c[b];" "==d.charAt(0);)d=d.substring(1,d.length);if(0==d.indexOf(a))return d.substring(a.length,d.length)}return null};
+this.set=function(a,c){var b="",b=new Date;b.setTime(b.getTime()+6048E5);b="; expires="+b.toGMTString();document.cookie=a+"="+c+b+"; path=/; "};
+this.check=function(){var a=this.get(f);if(a)a=a.split(":");else if(100!=e)"v"==h&&(e=Math.random()>=e/100?0:100),a=[h,e,0],this.set(f,a.join(":"));else return!0;var c=a[1];if(100==c)return!0;switch(a[0]){case "v":return!1;case "r":return c=a[2]%Math.floor(100/c),a[2]++,this.set(f,a.join(":")),!c}return!0};
+this.go=function(){if(this.check()){var a=document.createElement("script");a.type="text/javascript";a.src=g;document.body&&document.body.appendChild(a)}};
+this.start=function(){var t=this;"complete"!==document.readyState?window.addEventListener?window.addEventListener("load",function(){t.go()},!1):window.attachEvent&&window.attachEvent("onload",function(){t.go()}):t.go()};};
+try{(new g(100,"r","QSI_S_ZN_cGyXlStI5U4Imsm","https://zncgyxlsti5u4imsm-personio.siteintercept.qualtrics.com/SIE/?Q_ZID=ZN_cGyXlStI5U4Imsm")).start()}catch(i){}})();`;
+    const QUALTRICS_DEPLOYMENT_ID = 'ZN_cGyXlStI5U4Imsm';
+
+    const trackNPSMetDisplayRules = () => {
+        if (typeof window.amplitude === "undefined" || typeof window.amplitude.track !== "function") return;
+
+        const event = {
+            event_type: 'general: met nps display rules',
+            user_properties: {
+                companyId: getCompanyId(),
+            }
+        };
+
+        window.amplitude.track(
+            event,
+            {
+                page_path: window.location.pathname,
+                from_action: window.nps.fromAction,
+            }
+        );
+    }
+
+    const loadQualtricsScript = async () => {
+        if (document.querySelector(`#${QUALTRICS_DEPLOYMENT_ID}`)) return;
+
+        const isEligible = await getEligibility();
+        if (!isEligible) return;
+
+        const script = document.createElement('script');
+        script.async = true;
+        script.innerHTML = QUALTRICS_SCRIPT_IN_HTML;
+
+        const qualtricsDeploymentIdDiv = document.createElement('div');
+        qualtricsDeploymentIdDiv.id = QUALTRICS_DEPLOYMENT_ID;
+
+        trackNPSMetDisplayRules();
+
+        document.body.appendChild(qualtricsDeploymentIdDiv);
+        document.body.appendChild(script);
+        document.addEventListener('click', onSurveyDismiss);
+    };
+
+    const onSurveyDismiss = (event) => {
+      const element = event.target;
+      if (
+        element.tagName === 'IMG' &&
+        element.getAttribute('src')?.includes('close-btn')
+      )
+        window.dispatchEvent(new CustomEvent('nps-survey:dismiss'));
+    };
+
+    window.addEventListener(LOAD_NPS_SURVEY, loadQualtricsScript);
+
+    window.addEventListener('beforeunload', function () {
+        window.removeEventListener(LOAD_NPS_SURVEY, loadQualtricsScript);
+        document.removeEventListener('click', onSurveyDismiss);
+    });
+
+</script>
+
+<script>
+    const NPS_SURVEY_DATA = 'nps-survey-data';
+
+    const getNpsSurveyData = () => {
+        let npsSurveyData = localStorage.getItem(NPS_SURVEY_DATA) ?? null;
+
+        return JSON.parse(npsSurveyData);
+    }
+
+    const getEligibility = () => {
+        const npsSurveyData = getNpsSurveyData();
+        const shouldShowSurvey = !!npsSurveyData?.shouldShowSurvey;
+        const employeeId = npsSurveyData?.employeeId;
+        const companyId = 239541;
+
+        if (shouldShowSurvey && employeeId !== null) {
+            let isEligible = false;
+            const localStorageKey = `survey-eligibility-${companyId}-${employeeId}`;
+            const currentLocalStorageData = JSON.parse(
+                localStorage.getItem(localStorageKey) || 'null',
+            );
+
+            const expirationDate = currentLocalStorageData?.expiredAt;
+            if (expirationDate && new Date() < new Date(expirationDate)) {
+                isEligible = currentLocalStorageData?.isEligible ?? false;
+            }
+            return isEligible;
+        }
+        return false;
+    };
+
+    const displaySurvey = () => {
+        const isEligible = getEligibility();
+        const fromAction = 'logout';
+
+        if (isEligible) {
+            const npsSurveyData = getNpsSurveyData();
+            const companyId = 239541;
+
+            window.dispatchEvent(new CustomEvent(LOAD_NPS_SURVEY))
+
+            localStorage.setItem(
+                NPS_SURVEY_DATA,
+                JSON.stringify({
+                    ...npsSurveyData,
+                    companyId,
+                    shouldShowSurvey: false,
+                })
+            );
+
+            // store fromAction to window
+            window.nps = {
+                fromAction,
+            }
+        }
+    }
+
+    const getCompanyId = () => 239541;
+
+    window.addEventListener('load', displaySurvey);
+    window.addEventListener('beforeunload', function () {
+        window.removeEventListener('load', displaySurvey);
+    });
+</script>
+
+    <script>
+    function getAmplitudeUserId() {
+        const npsSurveyData = JSON.parse(
+            localStorage.getItem('nps-survey-data') || 'null',
+        );
+
+        return npsSurveyData?.employeeId || 'company-anon-user:239541';
+    }
+
+    function isDefaultTrackingEnabled() {
+        return false;
+    }
+
+    function getAmplitudeCompanyId() {
+        return '239541'
+    }
+</script>
+
+<script async>
+    const userId = getAmplitudeUserId();
+    const defaultTracking = isDefaultTrackingEnabled();
+    const app_language = 'en-GB';
+
+    if (userId !== undefined && userId !== "") {
+        const enrichPageUrlPlugin = () => {
+            return {
+                execute: async (event) => {
+                    event.event_properties = {
+                        ...event.event_properties,
+                        page_url: location.href
+                    };
+                    return event;
+                }
+            };
+        };
+        const enrichLanguagePlugin = () => {
+            return {
+                execute: async (event) => {
+                    if (event.event_type !== "[Amplitude] Page Viewed") {
+                        return event;
+                    }
+
+                    event.event_properties = {
+                        ...event.event_properties,
+                        app_language,
+                        device_language: navigator.language,
+                        device_language_preferences: navigator.languages
+                    };
+                    return event;
+                },
+            };
+
+        };
+        amplitude.init(
+            "6ae468c7390cb2065ccd45b93ba1f8cc",
+            userId,
+            {
+                serverZone: "EU",
+                defaultTracking,
+                identityStorage: "localStorage",
+                minIdLength: 1
+            }
+        );
+        amplitude.add(enrichPageUrlPlugin());
+        amplitude.add(enrichLanguagePlugin());
+
+        const companyId = getAmplitudeCompanyId();
+        if (companyId) {
+            amplitude.setGroup("company", companyId);
+        }
+    }
+
+    // Identify synthetic bots from Datadog. For more details, refer to the documentation: https://docs.datadoghq.com/synthetics/guide/identify_synthetics_bots/?tab=browsertests
+    if (navigator.userAgent && navigator.userAgent.endsWith("DatadogSynthetics")) {
+        const identify = new amplitude.Identify();
+        identify.set("is_synthetic", true);
+        amplitude.groupIdentify("company", String(getAmplitudeCompanyId()), identify);
+    }
+</script>
+    <script defer>
+
+const GENERAL_DISMISSED_NPS_SURVEY = 'general: dismissed nps survey';
+const GENERAL_DISPLAYED_NPS_SURVEY = 'general: displayed nps survey';
+const GENERAL_SUBMITTED_NPS_SURVEY = 'general: submitted nps survey';
+const GENERAL_SUBMITTED_NPS_SCORE = 'general: submitted nps score';
+const GENERAL_ANSWERED_NPS_FOLLOW_UP = 'general: submitted allow nps follow up question';
+const QUALTRICS_SURVEY_ORIGIN = 'https://surveys.personio.com';
+
+const NPS_SURVEY_DATA_LOCALSTORAGE_KEY = 'nps-survey-data';
+
+if (1) {
+  const getNPSSurveyData = () => {
+    if (true) {
+      return {
+        ...JSON.parse(localStorage.getItem(NPS_SURVEY_DATA_LOCALSTORAGE_KEY) || {}),
+        companyId: 239541
+      }
+    }
+
+    return {
+      employeeId: window.user.employeeId,
+      companyId: 239541
+    };
+  };
+
+  const track = (eventType, eventProperties) => {
+    if (typeof window.amplitude === 'undefined' || typeof window.amplitude.track !== 'function') {
+      return;
+    }
+
+    const userProperties = {
+      companyId: getNPSSurveyData().companyId,
+    };
+    const event = {
+      event_type: eventType,
+      user_properties: userProperties,
+    };
+
+    window.amplitude.track(event, {
+      ...eventProperties,
+    });
+  };
+
+  const setLocalStorage = (key, data) => {
+    localStorage.setItem(key, JSON.stringify(data));
+  };
+
+  const getSurveyEligibilityLocalStorageKey = () => {
+    const { companyId, employeeId } = getNPSSurveyData();
+
+    return `survey-eligibility-${companyId}-${employeeId}`;
+  };
+
+  const disqualifyNPSSurveyUntilOneWeekLater = () => {
+    if (!true) {
+      fetch(
+        `/svc/third-party-data-service/v1/nps-interaction/capture`,
+        {
+          headers: {
+              "X-XSRF-TOKEN": "rYD6OIZdAhyMb53j03OXjCr6OqDffTlIwBePHENj",
+          },
+          method: 'POST',
+        }
+      );
+    }
+
+    const sevenDaysInMilliseconds = 7 * 24 * 60 * 60 * 1000;
+    const oneWeekLater = new Date(+new Date() + sevenDaysInMilliseconds);
+    setLocalStorage(getSurveyEligibilityLocalStorageKey(), {
+      isEligible: false,
+      expiredAt: oneWeekLater,
+    });
+  };
+
+    const trackEvent = (eventName) => {
+      track(eventName, {
+        page_path: window.location.pathname,
+        from_action: window.nps.fromAction,
+      });
+    };
+
+  const onSurveyDismiss = () => {
+    disqualifyNPSSurveyUntilOneWeekLater();
+    trackEvent(GENERAL_DISMISSED_NPS_SURVEY);
+  };
+
+  const onSurveyLoad = () => {
+    trackEvent(GENERAL_DISPLAYED_NPS_SURVEY);
+  };
+
+  const onSurveySubmit = (qualtricsEventData) => {
+    disqualifyNPSSurveyUntilOneWeekLater();
+    switch (qualtricsEventData.payload.questionInfo.Selector) {
+      case 'NPS':
+        trackEvent(GENERAL_SUBMITTED_NPS_SCORE);
+        break;
+      case 'ESTB':
+        trackEvent(GENERAL_SUBMITTED_NPS_SURVEY);
+        break;
+      case 'SAVR':
+        trackEvent(GENERAL_ANSWERED_NPS_FOLLOW_UP);
+        break;
+      default:
+      // do nothing
+    }
+  };
+
+  /**
+   * Handle messages from Qualtrics iframe
+   * @param event
+   * @returns void
+   */
+  const onWindowMessage = (event) => {
+    if (event.origin === QUALTRICS_SURVEY_ORIGIN) {
+      const qualtricsEventData = event.data;
+      switch (qualtricsEventData.type) {
+        case 'onLoad':
+          onSurveyLoad();
+          break;
+        case 'onPageSubmit':
+          onSurveySubmit(qualtricsEventData);
+          break;
+        default:
+        // do nothing
+      }
+    }
+  };
+
+  window.addEventListener('message', onWindowMessage);
+  window.addEventListener('nps-survey:dismiss', onSurveyDismiss);
+
+  window.addEventListener('beforeunload', () => {
+    window.removeEventListener('message', onWindowMessage);
+    window.removeEventListener('nps-survey:dismiss', onSurveyDismiss);
+  });
+}
+</script>
+</body>
+</html>
+
+Email:  marius.verdier@hotmail.fr
