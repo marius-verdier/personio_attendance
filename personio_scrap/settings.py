@@ -95,3 +95,7 @@ REQUEST_FINGERPRINTER_IMPLEMENTATION = "2.7"
 TWISTED_REACTOR = "twisted.internet.asyncioreactor.AsyncioSelectorReactor"
 FEED_EXPORT_ENCODING = "utf-8"
 LOG_LEVEL="WARNING"
+
+# Playwright settings
+# headless: False will show the browser window
+# PLAYWRIGHT_LAUNCH_OPTIONS = {"headless": False}

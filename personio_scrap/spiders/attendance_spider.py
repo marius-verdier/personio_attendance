@@ -15,7 +15,7 @@ class AttendanceSpider(scrapy.Spider):
 
     def __init__(self, action=None, *args, **kwargs):
         super(AttendanceSpider, self).__init__(*args, **kwargs)
-        dotenv.load_dotenv()
+        dotenv.load_dotenv(verbose=True, override=True)
 
         self.allowed_domains.append(os.getenv('BASE_URL'))
         start_url = f'https://{os.getenv("BASE_URL")}/login/index'
@@ -27,8 +27,8 @@ class AttendanceSpider(scrapy.Spider):
         self.state_file = '.attendance_state.json'
         self.aria_label = {
             'start': 'Clock in',
-            'break': 'Take a break',
-            'stop_break': 'Continue working',
+            'break': 'Start break',
+            'stop_break': 'Resume work',
             'stop': 'Clock out'
         }
 
@@ -36,7 +36,7 @@ class AttendanceSpider(scrapy.Spider):
         url = self.start_urls[0]
         print(f"[PersonioClocker] Trying to log in for {self.email}")
         yield scrapy.FormRequest(
-            url=url, 
+            url=url,
             callback=self.get_page, 
             formdata={'email': self.email, 'password': self.password},
             meta={
