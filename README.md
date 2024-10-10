@@ -25,3 +25,6 @@ To manage your Personio attendance, please follow the instructions below :
 To register a full attendance record for the current day, after filling the environment file, run
 
 `scrapy crawl full_attendance`
+
+### TODO :
+- manage non-working days automatically
