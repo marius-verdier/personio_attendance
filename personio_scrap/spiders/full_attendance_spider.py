@@ -24,6 +24,9 @@ class FullAttendanceSpiderSpider(scrapy.Spider):
         self.break_start = os.getenv('BREAK_START')
         self.break_end = os.getenv('BREAK_END')
 
+        self.non_working_days = os.getenv('NON_WORKING_DAYS').split(',')
+        self.non_working_triggers = os.getenv('NON_WORKING_TRIGGERS').split(',')
+
         self.email = os.getenv('CREDS_EMAIL')
         self.password = os.getenv('CREDS_PASS')
         self.action = action  # 'start', 'break', 'stop_break' or 'stop'
@@ -85,6 +88,12 @@ class FullAttendanceSpiderSpider(scrapy.Spider):
             url = f'https://{os.getenv("BASE_URL")}{response.css("a[aria-label='Time Tracking']::attr(href)").extract_first()}'
             # get today date YYYY-MM-DD
             today = datetime.date.today().isoformat()
+            day = datetime.date.today().strftime("%A").lower()
+
+            if day in self.non_working_days:
+                print(f"[PersonioClocker] Today is {day}, it is a non-working day")
+                return
+
             print(f"[PersonioClocker] Waiting for registering attendance for {today}")
             yield Request(
                 url=url,
@@ -93,34 +102,72 @@ class FullAttendanceSpiderSpider(scrapy.Spider):
                     "playwright": True,
                     "playwright_include_page": True,
                     "playwright_page_methods": [
-                        # wait for all components to be rendered
                         PageMethod("wait_for_timeout", 8000),
-                        # click the button located in <div data-test-id="day_2024-10-03"><button data-test-id="day-cell-action-button"> to perform the action
-                        PageMethod("click", selector = f'div[data-test-id="today-cell"] button[data-test-id="day-cell-action-button"]',),
-                        # wait for the action to be performed
-                        PageMethod("wait_for_timeout", 3000),
                     ],
                 },
             )
             
     async def perform_attendance(self, response):
-        print(f"[PersonioClocker] Performing attendance registration")
-        # data-test-id="work-entry" -> data-test-id="timerange-start" + data-test-id="timerange-end"
-        # data-test-id="break-entry" -> data-test-id="timerange-start" + data-test-id="timerange-end"
-        # click button data-test-id="day-entry-save"
-        # get uuids from the timeranges (id attribute of input with data-test-id="timerange-start")
-        work_entry_uuid = "-".join(response.css('section[data-test-id="work-entry"] input[data-test-id="timerange-start"]::attr(id)').extract_first().split('-')[2:])
-        break_entry_uuid = "-".join(response.css('section[data-test-id="break-entry"] input[data-test-id="timerange-start"]::attr(id)').extract_first().split('-')[2:])
+        page = response.meta.get("playwright_page")
+        if not page:
+            print("[PersonioClocker] Error: 'playwright_page' not found in response metadata.")
+            return
 
-        print(f"[PersonioClocker] Entries UUIDs: {work_entry_uuid}, {break_entry_uuid}")
+        try:
+            # Check if today is a non-working day
+            inner = await page.inner_html('div[data-test-id="today-cell"]')
+            if any(trigger in inner for trigger in self.non_working_triggers):
+                print(f"[PersonioClocker] Today is a non-working day (trigger detected from {self.non_working_triggers})")
+                return
 
-        page = response.meta["playwright_page"]
-        await page.fill(f'input[id="start-input-{work_entry_uuid}"]', self.shift_start)
-        await page.fill(f'input[id="end-input-{work_entry_uuid}"]', self.shift_end)
-        await page.fill(f'input[id="start-input-{break_entry_uuid}"]', self.break_start)
-        await page.fill(f'input[id="end-input-{break_entry_uuid}"]', self.break_end)
+            # Click the action button for today
+            await page.click('div[data-test-id="today-cell"] button[data-test-id="day-cell-action-button"]')
+            await page.wait_for_timeout(3000)
+            print("[PersonioClocker] Performing attendance registration")
 
-        await page.click('button[data-test-id="day-entry-save"]')
-        print(f"[PersonioClocker] Attendance registered successfully for {datetime.date.today().isoformat()}")
-        yield Request(page.url)
+            # Extract UUIDs for work and break entries
+            work_entry_uuid = await self.extract_uuid(page, 'work-entry')
+            break_entry_uuid = await self.extract_uuid(page, 'break-entry')
+
+            if not work_entry_uuid or not break_entry_uuid:
+                print("[PersonioClocker] Error: Unable to extract entry UUIDs.")
+                return
+
+            print(f"[PersonioClocker] Entries UUIDs: {work_entry_uuid}, {break_entry_uuid}")
+
+            # Fill in the work and break times
+            await page.fill(f'input[id="start-input-{work_entry_uuid}"]', self.shift_start)
+            await page.fill(f'input[id="end-input-{work_entry_uuid}"]', self.shift_end)
+            await page.fill(f'input[id="start-input-{break_entry_uuid}"]', self.break_start)
+            await page.fill(f'input[id="end-input-{break_entry_uuid}"]', self.break_end)
+
+            # Save the entries
+            await page.click('button[data-test-id="day-entry-save"]')
+            print(f"[PersonioClocker] Attendance registered successfully for {datetime.date.today().isoformat()}")
+
+        except Exception as e:
+            print(f"[PersonioClocker] An error occurred: {e}")
+        finally:
+            await page.close()
         
+    def validate_time_format(self, time_str):
+        try:
+            datetime.datetime.strptime(time_str, '%H:%M')
+            return True
+        except ValueError:
+            return False
+
+    async def extract_uuid(self, page, entry_type):
+        try:
+            selector = f'section[data-test-id="{entry_type}"] input[data-test-id="timerange-start"]'
+            element = await page.query_selector(selector)
+            if element:
+                element_id = await element.get_attribute('id')
+                uuid_parts = element_id.split('-')[2:]
+                return "-".join(uuid_parts)
+            else:
+                print(f"[PersonioClocker] Error: Selector '{selector}' not found.")
+                return None
+        except Exception as e:
+            print(f"[PersonioClocker] Error extracting UUID for {entry_type}: {e}")
+            return None
