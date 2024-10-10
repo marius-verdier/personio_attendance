@@ -19,6 +19,11 @@ class FullAttendanceSpiderSpider(scrapy.Spider):
         start_url = f'https://{os.getenv("BASE_URL")}/login/index'
         self.start_urls.append(start_url)
 
+        self.shift_start = os.getenv('SHIFT_START')
+        self.shift_end = os.getenv('SHIFT_END')
+        self.break_start = os.getenv('BREAK_START')
+        self.break_end = os.getenv('BREAK_END')
+
         self.email = os.getenv('CREDS_EMAIL')
         self.password = os.getenv('CREDS_PASS')
         self.action = action  # 'start', 'break', 'stop_break' or 'stop'
@@ -58,20 +63,19 @@ class FullAttendanceSpiderSpider(scrapy.Spider):
 
             url = self.start_urls[0]
 
-            yield FormRequest(
+
+            yield scrapy.FormRequest(
                 url=url,
+                callback=self.redirect_attendance, 
                 formdata={"_token": hidden_token, "token": code},
                 meta={
                     "playwright": True,
                     "playwright_page_methods": [
                         # wait for all components to be rendered
-                        PageMethod("wait_for_timeout", 8000),
-                        # click the button to perform the action
-                        PageMethod("click", selector = f'button[aria-label="{self.aria_label[self.action]}"]',),
-                        # wait for the action to be performed
-                        PageMethod("wait_for_timeout", 3000),
+                        PageMethod("wait_for_timeout", 8000)
                     ],
-                    },
+                },
+                dont_filter = True
             )
             return
         else:
@@ -111,50 +115,12 @@ class FullAttendanceSpiderSpider(scrapy.Spider):
         print(f"[PersonioClocker] Entries UUIDs: {work_entry_uuid}, {break_entry_uuid}")
 
         page = response.meta["playwright_page"]
-        await page.fill(f'input[id="start-input-{work_entry_uuid}"]', "09:00")
-        await page.fill(f'input[id="end-input-{work_entry_uuid}"]', "18:00")
-        await page.fill(f'input[id="start-input-{break_entry_uuid}"]', "13:00")
-        await page.fill(f'input[id="end-input-{break_entry_uuid}"]', "14:00")
+        await page.fill(f'input[id="start-input-{work_entry_uuid}"]', self.shift_start)
+        await page.fill(f'input[id="end-input-{work_entry_uuid}"]', self.shift_end)
+        await page.fill(f'input[id="start-input-{break_entry_uuid}"]', self.break_start)
+        await page.fill(f'input[id="end-input-{break_entry_uuid}"]', self.break_end)
 
         await page.click('button[data-test-id="day-entry-save"]')
         print(f"[PersonioClocker] Attendance registered successfully for {datetime.date.today().isoformat()}")
         yield Request(page.url)
         
-
-
-
-
-    def get_page(self, response):
-
-        if "For security reasons you're required to enter the token" in response.text:
-            print(f"[PersonioClocker] Personio detected a login from a new device, they sent a code to {self.email}")
-
-            hidden_token = response.css('input[name="_token"]::attr(value)').extract_first()
-
-            # wait user input for code
-            code = input(f"[PersonioClocker] Please enter the code you received at {self.email} : ")
-
-            url = self.start_urls[0]
-
-            yield FormRequest(
-                url=url,
-                formdata={"_token": hidden_token, "token": code},
-                meta={
-                    "playwright": True,
-                    "playwright_page_methods": [
-                        # wait for all components to be rendered
-                        PageMethod("wait_for_timeout", 8000),
-                        # click the button to perform the action
-                        PageMethod("click", selector = f'button[aria-label="{self.aria_label[self.action]}"]',),
-                        # wait for the action to be performed
-                        PageMethod("wait_for_timeout", 3000),
-                    ],
-                    },
-            )
-            return
-
-        else :
-            print("[PersonioClocker] Log in successful")
-
-            print(f"[PersonioClocker] Performing action: {self.aria_label[self.action]}")
-                
