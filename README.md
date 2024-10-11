@@ -2,9 +2,30 @@
 
 Side project to learn how to use Scrapy in a simple case.
 
+## Prerequisites
+
+- Python 3.x
+- git (to clone the repository)
+
+## Setup Instructions
+
+### On Unix/Linux/MacOS
+
+```bash
+git clone git@github.com:marius-verdier/personio_attendance.git
+cd personio_attendance
+chmod +x setup.sh
+./setup.sh
+```
+
+Once the setup is done, don't forget to go in the virtual environment by running
+```
+source .venv/bin/activate
+```
+
 ## Configuration
 
-Once you cloned the repo, you'll have to create a `.env` file in the root folder. The environment file (see `.env.example`) should contain the following informations :
+Once you cloned the repo, you'll have to create a `.env` file in the root folder. The environment file (see `.env.template`) should contain the following informations :
 
 ```
 # for example, if your personio url is https://company.personio.de/, the following will be
@@ -39,3 +60,6 @@ Every attendance action is available using some commands instead of going on the
 To register a full attendance record for the current day, using the day verification and the shift hours, after filling the environment file, run :
 
 `scrapy crawl full_attendance`
+
+todo : 
+- random hours
