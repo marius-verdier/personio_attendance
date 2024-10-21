@@ -2,6 +2,7 @@ import scrapy
 import dotenv
 import os
 import datetime
+import random
 
 from scrapy.http import FormRequest, Request
 from scrapy_playwright.page import PageMethod
@@ -23,6 +24,7 @@ class FullAttendanceSpiderSpider(scrapy.Spider):
         self.shift_end = os.getenv('SHIFT_END')
         self.break_start = os.getenv('BREAK_START')
         self.break_end = os.getenv('BREAK_END')
+        self.alea = os.getenv('ALEA')
 
         self.non_working_days = os.getenv('NON_WORKING_DAYS').split(',')
         self.non_working_triggers = os.getenv('NON_WORKING_TRIGGERS').split(',')
@@ -135,9 +137,17 @@ class FullAttendanceSpiderSpider(scrapy.Spider):
 
             print(f"[PersonioClocker] Entries UUIDs: {work_entry_uuid}, {break_entry_uuid}")
 
+            # floor the gaussian adjustment to the nearest minute
+            adjustment_minutes = round(random.gauss(0, int(self.alea)))
+
+            shifted_start = self.adjust_time_gaussian(self.shift_start, adjustment_minutes)
+            shifted_end = self.adjust_time_gaussian(self.shift_end, adjustment_minutes)
+
+            print(f"[PersonioClocker] Adjusting times. New times: {shifted_start} - {shifted_end}")
+
             # Fill in the work and break times
-            await page.fill(f'input[id="start-input-{work_entry_uuid}"]', self.shift_start)
-            await page.fill(f'input[id="end-input-{work_entry_uuid}"]', self.shift_end)
+            await page.fill(f'input[id="start-input-{work_entry_uuid}"]', shifted_start)
+            await page.fill(f'input[id="end-input-{work_entry_uuid}"]', shifted_end)
             await page.fill(f'input[id="start-input-{break_entry_uuid}"]', self.break_start)
             await page.fill(f'input[id="end-input-{break_entry_uuid}"]', self.break_end)
 
@@ -171,3 +181,18 @@ class FullAttendanceSpiderSpider(scrapy.Spider):
         except Exception as e:
             print(f"[PersonioClocker] Error extracting UUID for {entry_type}: {e}")
             return None
+        
+
+    def adjust_time_gaussian(self, hour_str=None, adjustment_minutes=0):
+        # Convert the string time to a datetime object
+        time_format = "%H:%M"  # Assuming the time format is 'HH:MM'
+        time_obj = datetime.datetime.strptime(hour_str, time_format)
+        # Create a timedelta object with the Gaussian adjustment
+        adjustment = datetime.timedelta(minutes=adjustment_minutes)
+        # Adjust the original time
+        new_time = time_obj + adjustment
+        
+        # Convert back to string in the same format
+        new_time_str = new_time.strftime(time_format)
+        
+        return new_time_str

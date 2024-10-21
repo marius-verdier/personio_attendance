@@ -23,6 +23,10 @@ class AttendanceSpider(scrapy.Spider):
 
         self.email = os.getenv('CREDS_EMAIL')
         self.password = os.getenv('CREDS_PASS')
+
+        self.non_working_days = os.getenv('NON_WORKING_DAYS').split(',')
+        self.non_working_triggers = os.getenv('NON_WORKING_TRIGGERS').split(',')
+
         self.action = action  # 'start', 'break', 'stop_break' or 'stop'
         self.state_file = '.attendance_state.json'
         self.aria_label = {
@@ -37,23 +41,25 @@ class AttendanceSpider(scrapy.Spider):
         print(f"[PersonioClocker] Trying to log in for {self.email}")
         yield scrapy.FormRequest(
             url=url,
-            callback=self.get_page, 
+            callback=self.redirect_attendance, 
             formdata={'email': self.email, 'password': self.password},
             meta={
                 "playwright": True,
+                "playwright_include_page": True,
                 "playwright_page_methods": [
                     # wait for all components to be rendered
-                    PageMethod("wait_for_timeout", 8000),
-                    # click the button to perform the action
-                    PageMethod("click", selector = f'button[aria-label="{self.aria_label[self.action]}"]',),
-                    # wait for the action to be performed
-                    PageMethod("wait_for_timeout", 3000),
+                    PageMethod("wait_for_timeout", 8000)
                 ],
             },
             dont_filter = True
             )
 
     def get_page(self, response):
+
+        page = response.meta.get("playwright_page")
+        if not page:
+            print("[PersonioClocker] Error: 'playwright_page' not found in response metadata.")
+            return
 
         if "For security reasons you're required to enter the token" in response.text:
             print(f"[PersonioClocker] Personio detected a login from a new device, they sent a code to {self.email}")
@@ -73,10 +79,6 @@ class AttendanceSpider(scrapy.Spider):
                     "playwright_page_methods": [
                         # wait for all components to be rendered
                         PageMethod("wait_for_timeout", 8000),
-                        # click the button to perform the action
-                        PageMethod("click", selector = f'button[aria-label="{self.aria_label[self.action]}"]',),
-                        # wait for the action to be performed
-                        PageMethod("wait_for_timeout", 3000),
                     ],
                     },
             )
@@ -84,6 +86,12 @@ class AttendanceSpider(scrapy.Spider):
 
         else :
             print("[PersonioClocker] Log in successful")
+
+
+                # # click the button to perform the action
+                # PageMethod("click", selector = f'button[aria-label="{self.aria_label[self.action]}"]',),
+                # # wait for the action to be performed
+                # PageMethod("wait_for_timeout", 3000),
 
             print(f"[PersonioClocker] Performing action: {self.aria_label[self.action]}")
                 
