@@ -2,14 +2,22 @@
 
 Side project to learn how to use Scrapy in a simple case.
 
-## Prerequisites
+*Update: a bash version, way faster, has been made*
+
+## Bash
+
+Just fill the clock.sh file with personal informations, install jq (apt-get or brew) on your machine and run the script. Sometimes, personio might ask for a token sent by email. The script should support this and ask you to enter the token, but not fully tested.
+
+## Python
+
+### Prerequisites
 
 - Python 3.x
 - git (to clone the repository)
 
-## Setup Instructions
+### Setup Instructions
 
-### On Unix/Linux/MacOS
+#### On Unix/Linux/MacOS
 
 ```bash
 git clone git@github.com:marius-verdier/personio_attendance.git
@@ -23,7 +31,7 @@ Once the setup is done, don't forget to go in the virtual environment by running
 source .venv/bin/activate
 ```
 
-## Configuration
+### Configuration
 
 Once you cloned the repo, you'll have to create a `.env` file in the root folder. The environment file (see `.env.template`) should contain the following informations :
 
@@ -46,7 +54,7 @@ BREAK_START=13:00
 BREAK_END=14:00
 ```
 
-## Usage CLI
+### Usage CLI
 
 Every attendance action is available using some commands instead of going on the platform :
 - To clock in (at the moment you run the command) : `scrapy crawl attendance -a action=start`
@@ -55,11 +63,8 @@ Every attendance action is available using some commands instead of going on the
 - To clock out (at the moment you run the command) : `scrapy crawl attendance -a action=stop`
 
 
-## Usage for a full attendance record 
+### Usage for a full attendance record 
 
 To register a full attendance record for the current day, using the day verification and the shift hours, after filling the environment file, run :
 
 `scrapy crawl full_attendance`
-
-todo : 
-- random hours
