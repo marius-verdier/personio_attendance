@@ -53,8 +53,11 @@ fi
 XSRF_TOKEN=$(grep 'XSRF-TOKEN' "$COOKIE_FILE" | awk '{print $7}')
 COOKIES=$(awk '{print $6"="$7}' "$COOKIE_FILE" | tr '\n' ';' | sed 's/;$//')
 
-START_TS=$(date -j -f "%Y-%m-%d %H:%M:%S" "$TODAY 00:00:00" "+%s")
-END_TS=$(date -j -f "%Y-%m-%d %H:%M:%S" "$TODAY 23:59:59" "+%s")
+# On MacOS, replace by
+# START_TS=$(date -j -f "%Y-%m-%d %H:%M:%S" "$TODAY 00:00:00" "+%s")
+# END_TS=$(date -j -f "%Y-%m-%d %H:%M:%S" "$TODAY 23:59:59" "+%s")
+START_TS=$(date -d "$TODAY 00:00:00" +%s)
+END_TS=$(date -d "$TODAY 23:59:59" +%s)
 
 HOLIDAY_RESPONSE=$(curl --silent --location "https://$BASE_URL/time-off/holidays/${EMPLOYEE_ID}?start=${START_TS}&end=${END_TS}" \
     --header "User-Agent: $USER_AGENT" \
