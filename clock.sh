@@ -28,7 +28,7 @@ fi
 COOKIE_FILE=$(mktemp)
 HEADER_FILE=$(mktemp)
 
-HTML_CONTENT=(curl --silent --location "https://$BASE_URL/login/index" \
+HTML_CONTENT=$(curl --silent --location "https://$BASE_URL/login/index" \
     --header "User-Agent: $USER_AGENT" \
     --form "email=${EMAIL}" \
     --form "password=${PASSWORD}" \
